@@ -1,0 +1,44 @@
+[env]
+RELEASE_FLAG = "--dev"
+
+[env.production]
+RELEASE_FLAG = ""
+
+[config]
+skip_core_tasks = true
+
+# Clean
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+dependencies = ["clean_pkg"]
+
+[tasks.clean_pkg]
+script_runner = "@shell"
+script = "rm -rf pkg"
+
+# Update
+[tasks.update_bin]
+script_runner = "@shell"
+script = """
+cp -ur static ../bin
+cp -ur pkg ../bin/static
+"""
+dependencies = ["build"]
+
+# Build
+[tasks.build]
+install_crate = { crate_name = "wasm-pack", binary = "wasm-pack", test_arg = "-V" }
+command = "wasm-pack"
+args = ["build", "--target", "web", "--out-name", "package", "@@remove-empty(RELEASE_FLAG)"]
+
+# Lint
+[tasks.clippy]
+install_crate = { rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
+command = "cargo"
+args = ["clippy", "--all-features", "--", "--deny", "warnings", "--deny", "clippy::pedantic", "--deny", "clippy::nursery", "--deny", "clippy::use_self"]
+
+[tasks.fmt]
+install_crate = { rustup_component_name = "rustfmt", binary = "rustfmt", test_arg = "-V" }
+command = "cargo"
+args = ["fmt"]

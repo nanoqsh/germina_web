@@ -1,0 +1,37 @@
+[env]
+EXE_SUFFIX = { source = "${CARGO_MAKE_RUST_TARGET_OS}", default_value = "", mapping = { windows = ".exe" } }
+EXE = "server${EXE_SUFFIX}"
+RELEASE_FLAG = ""
+
+[env.production]
+RELEASE_FLAG = "--release"
+
+# Clean
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+# Update
+[tasks.update_bin]
+script_runner = "@shell"
+script = """
+cp -u ${TARGET_DIR}/${EXE} ../bin/${EXE}
+cp -u ${CARGO_MAKE_WORKING_DIRECTORY}/Rocket.toml ../bin/Rocket.toml
+"""
+dependencies = ["build"]
+
+# Build
+[tasks.build]
+command = "cargo"
+args = ["build", "@@remove-empty(RELEASE_FLAG)"]
+
+# Lint
+[tasks.clippy]
+install_crate = { rustup_component_name = "clippy", binary = "cargo-clippy", test_arg = "--help" }
+command = "cargo"
+args = ["clippy", "--all-features", "--", "--deny", "warnings", "--deny", "clippy::nursery", "--deny", "clippy::use_self"]
+
+[tasks.fmt]
+install_crate = { rustup_component_name = "rustfmt", binary = "rustfmt", test_arg = "-V" }
+command = "cargo"
+args = ["fmt"]

@@ -1,0 +1,29 @@
+[env]
+CARGO_MAKE_WORKSPACE_EMULATION = true
+CARGO_MAKE_CRATE_WORKSPACE_MEMBERS = [
+    "server",
+    "web",
+]
+TARGET_DIR="target/debug"
+
+[env.production]
+TARGET_DIR="target/release"
+
+[config]
+skip_core_tasks = true
+
+[tasks.default]
+workspace = false
+dependencies = ["update"]
+
+# Update
+[tasks.update]
+workspace = false
+dependencies = ["make_bin", "update_bin_members"]
+
+[tasks.make_bin]
+script_runner = "@shell"
+script = "mkdir -p bin"
+
+[tasks.update_bin_members]
+run_task = { name = "update_bin", fork = true }

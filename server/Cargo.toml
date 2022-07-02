@@ -1,0 +1,15 @@
+[package]
+name = "server"
+version = "0.1.0"
+authors = ["nanoqsh <nanoqsh@gmail.com>"]
+description = "HTTP server of the website"
+license = "MIT"
+readme = "../README.md"
+edition = "2021"
+
+[dependencies]
+rocket = { version = "0.5.0-rc.2", features = ["json"] }
+
+[profile.release]
+strip = "debuginfo"
+lto = true
