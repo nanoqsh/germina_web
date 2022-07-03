@@ -4,27 +4,20 @@ RELEASE_FLAG = "--dev"
 [env.production]
 RELEASE_FLAG = ""
 
-[config]
-skip_core_tasks = true
-
 # Clean
 [tasks.clean]
 command = "cargo"
 args = ["clean"]
-dependencies = ["clean_pkg"]
-
-[tasks.clean_pkg]
-script_runner = "@shell"
-script = "rm -rf pkg"
 
 # Update
 [tasks.update_bin]
-script_runner = "@shell"
-script = """
-cp -ur static ../bin
-cp -ur pkg ../bin/static
-"""
-dependencies = ["build"]
+command = "cargo"
+args = ["run", "--manifest-path", "../build_tools/Cargo.toml", "--bin", "cp", "pkg", "../bin/static/pkg"]
+dependencies = ["build", "update_static"]
+
+[tasks.update_static]
+command = "cargo"
+args = ["run", "--manifest-path", "../build_tools/Cargo.toml", "--bin", "cp", "static", "../bin/static"]
 
 # Build
 [tasks.build]

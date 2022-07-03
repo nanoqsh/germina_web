@@ -1,0 +1,12 @@
+[package]
+name = "build_tools"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "cp"
+path = "src/cp/main.rs"
+
+[[bin]]
+name = "mkdir"
+path = "src/mkdir/main.rs"

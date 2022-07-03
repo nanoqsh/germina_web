@@ -13,12 +13,13 @@ args = ["clean"]
 
 # Update
 [tasks.update_bin]
-script_runner = "@shell"
-script = """
-cp -u ${TARGET_DIR}/${EXE} ../bin/${EXE}
-cp -u ${CARGO_MAKE_WORKING_DIRECTORY}/Rocket.toml ../bin/Rocket.toml
-"""
-dependencies = ["build"]
+command = "cargo"
+args = ["run", "--manifest-path", "../build_tools/Cargo.toml", "--bin", "cp", "${CARGO_MAKE_WORKING_DIRECTORY}/Rocket.toml", "../bin/Rocket.toml"]
+dependencies = ["build", "update_exe"]
+
+[tasks.update_exe]
+command = "cargo"
+args = ["run", "--manifest-path", "../build_tools/Cargo.toml", "--bin", "cp", "${TARGET_DIR}/${EXE}", "../bin/${EXE}"]
 
 # Build
 [tasks.build]
