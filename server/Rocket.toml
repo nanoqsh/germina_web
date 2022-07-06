@@ -4,4 +4,4 @@ port = 3456
 log_level = "debug"
 
 [default.databases]
-sqlite = { url = "data.db" }
+sqlite = { url = "sqlite:data.db" }
